@@ -60,23 +60,36 @@ export default class Main extends Component {
 	handleAddUser = async () => {
 		const { users, newUser } = this.state;
 
+		const hasUser = users.filter(user => user.login === newUser);
+		if (hasUser) {
+			this.setState({ newUser: '' });
+			return;
+		}
+
 		this.setState({ loading: true });
 
-		const response = await api.get(`users/${newUser}`);
+		try {
+			const response = await api.get(`users/${newUser}`);
 
-		const data = {
-			name: response.data.name,
-			login: response.data.login,
-			bio: response.data.bio,
-			avatar: response.data.avatar_url,
-		};
+			const data = {
+				name: response.data.name,
+				login: response.data.login,
+				bio: response.data.bio,
+				avatar: response.data.avatar_url,
+			};
 
-		this.setState({
-			users: [...users, data],
-			newUser: '',
-			loading: false,
-			oppend: '',
-		});
+			this.setState({
+				users: [...users, data],
+				newUser: '',
+				loading: false,
+				oppend: '',
+			});
+		} catch {
+			this.setState({
+				loading: false,
+				newUser: '',
+			});
+		}
 		Keyboard.dismiss();
 	};
 
