@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 export const Container = styled.View`
 	flex: 1;
@@ -33,7 +34,7 @@ export const SubmitButton = styled(RectButton)`
 	padding: 0 12px;
 `;
 
-export const List = styled.FlatList.attrs({
+export const List = styled(SwipeListView).attrs({
 	showsVerticalScrollIndicator: false,
 })`
 	margin-top: 20px;
@@ -84,5 +85,42 @@ export const ProfileButtonText = styled.Text`
 	font-size: 14px;
 	font-weight: bold;
 	color: #fff;
+	text-transform: uppercase;
+`;
+
+export const SwipeArea = styled.View`
+	align-items: center;
+	flex: 1;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-left: 15px;
+`;
+
+export const SwipeButtonLeft = styled.TouchableOpacity`
+	align-items: center;
+	bottom: 0px;
+	justify-content: center;
+	position: absolute;
+	top: 0px;
+	width: 75px;
+	background-color: green;
+	left: 0px;
+`;
+
+export const SwipeButtonRight = styled.TouchableOpacity`
+	align-items: center;
+	bottom: 0px;
+	justify-content: center;
+	position: absolute;
+	top: 0px;
+	width: 80px;
+	height: 175px;
+	right: 0px;
+`;
+
+export const SwipeButtonText = styled.Text`
+	font-size: 14px;
+	font-weight: bold;
+	color: red;
 	text-transform: uppercase;
 `;

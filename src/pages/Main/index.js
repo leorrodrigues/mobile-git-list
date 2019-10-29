@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import api from '../../services/api';
+
 import {
 	Container,
 	Form,
@@ -17,6 +18,9 @@ import {
 	Bio,
 	ProfileButton,
 	ProfileButtonText,
+	SwipeArea,
+	SwipeButtonRight,
+	SwipeButtonText,
 } from './styles';
 
 export default class Main extends Component {
@@ -33,6 +37,7 @@ export default class Main extends Component {
 	state = {
 		newUser: '',
 		users: [],
+		oppend: '',
 		loading: false,
 	};
 
@@ -46,6 +51,7 @@ export default class Main extends Component {
 
 	async componentDidUpdate(_, prevState) {
 		const { users } = this.state;
+
 		if (prevState.users !== users) {
 			AsyncStorage.setItem('users', JSON.stringify(users));
 		}
@@ -69,6 +75,7 @@ export default class Main extends Component {
 			users: [...users, data],
 			newUser: '',
 			loading: false,
+			oppend: '',
 		});
 		Keyboard.dismiss();
 	};
@@ -79,8 +86,22 @@ export default class Main extends Component {
 		navigation.navigate('User', { user });
 	};
 
+	handleDeleteUser = userLogin => {
+		const { users } = this.state;
+		const filteredData = users.filter(user => user.login !== userLogin);
+		this.setState({ users: filteredData, oppend: '' });
+	};
+
+	handleRowOpen = userLogin => {
+		this.setState({ oppend: userLogin });
+	};
+
+	handleRowClose = () => {
+		this.setState({ oppend: '' });
+	};
+
 	render() {
-		const { users, newUser, loading } = this.state;
+		const { users, newUser, loading, oppend } = this.state;
 		return (
 			<Container>
 				<Form>
@@ -105,6 +126,8 @@ export default class Main extends Component {
 					</SubmitButton>
 				</Form>
 				<List
+					useFlatList
+					disableRightSwipe
 					data={users}
 					keyExtractor={user => user.login}
 					renderItem={({ item }) => (
@@ -122,6 +145,34 @@ export default class Main extends Component {
 							</ProfileButton>
 						</User>
 					)}
+					renderHiddenItem={({ item }) => (
+						<>
+							{oppend === item.login && (
+								<SwipeArea>
+									<SwipeButtonRight
+										onPress={() =>
+											this.handleDeleteUser(item.login)
+										}
+									>
+										<Icon
+											name="delete"
+											size={30}
+											color="red"
+										/>
+										<SwipeButtonText>
+											Delete
+										</SwipeButtonText>
+									</SwipeButtonRight>
+								</SwipeArea>
+							)}
+						</>
+					)}
+					rightOpenValue={-60}
+					previewRowKey="0"
+					previewOpenValue={-40}
+					previewOpenDelay={3000}
+					onRowOpen={this.handleRowOpen}
+					onRowClose={this.handleRowClose}
 				/>
 			</Container>
 		);
